@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Start Core Dev Server (CE)" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="export CONTINUE_DEVELOPMENT=true &amp;&amp; export CONTINUE_GLOBAL_DIR=$PROJECT_DIR$/extensions/.continue-debug &amp;&amp; node out/index.js" />
+<!--    <option name="SCRIPT_TEXT" value="export CONTINUE_DEVELOPMENT=true &amp;&amp; export CONTINUE_GLOBAL_DIR=$PROJECT_DIR$/extensions/.continue-debug &amp;&amp; node out/index.js" />-->
+    <option name="SCRIPT_TEXT" value="Set-Item -Path Env:CONTINUE_DEVELOPMENT -Value 'true'; Set-Item -Path Env:CONTINUE_GLOBAL_DIR -Value 'D:/development/code/my/continue-code-assistant/extensions/.continue-debug'; node out/index.js" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />

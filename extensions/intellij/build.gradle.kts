@@ -28,7 +28,7 @@ version = properties("pluginVersion").get()
 // Configure project's dependencies
 repositories {
     mavenCentral()
-    maven { url = uri("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies") }
+    maven { url = uri("https://maven.aliyun.com/repository/public") }
 }
 
 // Dependencies are managed with Gradle version catalog - read more:

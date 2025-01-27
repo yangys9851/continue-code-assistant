@@ -16,7 +16,7 @@
       "out/tree-sitter-wasms/*"
     ],
     "targets": [
-      "node18-darwin-arm64"
+      "node18-win-arm64"
     ],
     "outputPath": "bin"
   },
@@ -32,7 +32,7 @@
     "@types/jest": "^29.5.12",
     "@types/uuid": "^9.0.8",
     "@vercel/ncc": "^0.38.1",
-    "esbuild": "0.19.11",
+    "esbuild": "^0.19.11",
     "jest": "^29.7.0",
     "pkg": "^5.8.1",
     "rimraf": "^5.0.7",
@@ -40,6 +40,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@lancedb/vectordb-win32-x64-msvc": "^0.13.0",
     "@octokit/rest": "^20.0.2",
     "commander": "^12.0.0",
     "core": "file:../core",
@@ -48,6 +49,7 @@
     "ncp": "^2.0.0",
     "node-fetch": "^3.3.2",
     "posthog-node": "^3.6.3",
+    "sqlite3": "^5.1.7",
     "system-ca": "^1.0.2",
     "uuid": "^9.0.1",
     "vectordb": "^0.4.20",
