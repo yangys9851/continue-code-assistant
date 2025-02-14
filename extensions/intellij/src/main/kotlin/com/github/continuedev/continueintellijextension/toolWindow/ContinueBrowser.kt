@@ -34,6 +34,11 @@ class ContinueBrowser(val project: Project, url: String) {
 
         this.browser = JBCefBrowser.createBuilder().setOffScreenRendering(isOSREnabled).build()
 
+        browser.jbCefClient.setProperty(
+            JBCefClient.Properties.JS_QUERY_POOL_SIZE,
+            Integer.valueOf(JS_QUERY_POOL_SIZE)
+        )
+
         registerAppSchemeHandler()
         browser.loadURL(url);
         Disposer.register(ContinuePluginDisposable.getInstance(project), browser)
