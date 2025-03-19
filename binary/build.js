@@ -23,10 +23,10 @@ fs.mkdirSync(build);
 
 const esbuildOutputFile = "out/index.js";
 let targets = [
-  "darwin-x64",
-  "darwin-arm64",
-  "linux-x64",
-  "linux-arm64",
+  // "darwin-x64",
+  // "darwin-arm64",
+  // "linux-x64",
+  // "linux-arm64",
   "win32-x64",
 ];
 
@@ -257,7 +257,11 @@ async function installNodeModuleInTempDirAndCopyToCurrent(packageName, toCopy) {
             target
           }.tar.gz`;
 
-    execCmdSync(`curl -L -o ${targetDir}/build.tar.gz ${downloadUrl}`);
+    // execCmdSync(`curl -L -o ${targetDir}/build.tar.gz ${downloadUrl}`);
+    fs.copyFileSync(
+      `win32-x64/build.tar.gz`,
+      `${targetDir}/build.tar.gz`,
+    );
     execCmdSync(`cd ${targetDir} && tar -xvzf build.tar.gz`);
 
     // Copy to build directory for testing

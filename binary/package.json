@@ -16,7 +16,7 @@
       "out/tree-sitter-wasms/*"
     ],
     "targets": [
-      "node18-darwin-arm64"
+      "node18-win-arm64"
     ],
     "outputPath": "bin"
   },

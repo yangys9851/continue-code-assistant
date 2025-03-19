@@ -9,7 +9,10 @@ if (!fs.existsSync(logDirPath)) {
 }
 
 if (!fs.existsSync(logFilePath)) {
-  fs.createWriteStream(logFilePath).end();
+  fs.writeFileSync(logFilePath, '', {
+    flag: 'w',
+    encoding: 'utf-8'
+  });
 }
 
 console.log("Watching logs at " + logFilePath)
