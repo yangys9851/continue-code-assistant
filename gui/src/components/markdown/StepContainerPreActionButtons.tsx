@@ -115,9 +115,10 @@ export default function StepContainerPreActionButtons({
           <HeaderButtonWithToolTip
             text="Insert at cursor"
             style={{ backgroundColor: vscEditorBackground }}
-            onClick={() =>
+            onClick={() => {
+              ideMessenger.request("stats/trackFeatureUsages", {feature:"insertAtCursor"});
               ideMessenger.post("insertAtCursor", { text: codeBlockContent })
-            }
+            }}
             tooltipPlacement={toolTipPlacement}
           >
             <ArrowLeftEndOnRectangleIcon className="h-4 w-4 text-gray-400" />

@@ -75,6 +75,15 @@ function Stats() {
       >
         <ArrowLeftIcon className="ml-4 inline-block h-3 w-3 cursor-pointer" />
         <span className="m-2 inline-block text-base font-bold">More</span>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate("/usagestats");
+          }}
+          className="ml-auto mr-4 px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Feature Usage
+        </button>
       </div>
 
       <div className="p-2">

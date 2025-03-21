@@ -39,6 +39,7 @@ export type GlobalContextType = {
   isSupportedLanceDbCpuTargetForLinux: boolean;
   sharedConfig: SharedConfigSchema;
   failedDocs: SiteIndexingConfig[];
+  username?: string;
 };
 
 /**

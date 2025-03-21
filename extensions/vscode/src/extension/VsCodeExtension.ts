@@ -73,6 +73,17 @@ export class VsCodeExtension {
       },
     );
     this.ide = new VsCodeIde(this.webviewProtocolPromise, context);
+    this.ide.getPlatform = async () => {
+      const os = require('os');
+      const platform = os.platform();
+
+      switch (platform) {
+        case 'darwin': return 'mac';
+        case 'win32': return 'windows';
+        case 'linux': return 'linux';
+        default: return 'unknown';
+      }
+    };
     this.extensionContext = context;
     this.windowId = uuidv4();
 

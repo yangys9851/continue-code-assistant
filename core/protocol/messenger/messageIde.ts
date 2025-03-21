@@ -17,6 +17,32 @@ import type {
   Thread,
 } from "../..";
 
+// Cross-platform utility function to run sync commands
+function runSyncCommand(command: string, options?: { cwd?: string; encoding?: BufferEncoding }): string {
+  // Check if we're in a Node.js environment
+  const isNode = typeof process !== 'undefined' && process.versions && process.versions.node;
+
+  if (!isNode) {
+    // Browser or unsupported environment
+    console.warn(`Attempted to run sync command in non-Node environment: ${command}`);
+    return '';
+  }
+
+  // Dynamically import child_process only in Node.js environment
+  try {
+    const { execSync } = require('child_process');
+    return execSync(command, {
+      encoding: 'utf-8',
+      ...(options || {})
+    }).trim();
+  } catch (error) {
+    console.error(`Error running command: ${command}`, error);
+    return '';
+  }
+}
+
+type Platform = "mac" | "linux" | "windows" | "unknown";
+
 export class MessageIde implements IDE {
   constructor(
     private readonly request: <T extends keyof ToIdeFromWebviewOrCoreProtocol>(
@@ -197,5 +223,69 @@ export class MessageIde implements IDE {
 
   async getBranch(dir: string): Promise<string> {
     return this.request("getBranch", { dir });
+  }
+  getGitUsername(): Promise<string | undefined> {
+    try {
+      // Map NodeJS platform to our custom Platform type
+      const platform: Platform =
+        process.platform === 'win32' ? 'windows' :
+          process.platform === 'darwin' ? 'mac' :
+            process.platform === 'linux' ? 'linux' : 'linux';
+
+      // Try to get global Git username
+      const username = runSyncCommand('git config --global user.name', { encoding: 'utf-8' }).trim();
+
+      console.log('Git Username:', username);
+      return Promise.resolve(username || undefined);
+    } catch (globalError) {
+      try {
+        // If global config fails, try local repository config
+        const platform: Platform =
+          process.platform === 'win32' ? 'windows' :
+            process.platform === 'darwin' ? 'mac' :
+              process.platform === 'linux' ? 'linux' : 'linux';
+
+        const localUsername = runSyncCommand('git config user.name', { encoding: 'utf-8' }).trim();
+
+        console.log('Local Git Username:', localUsername);
+        return Promise.resolve(localUsername || undefined);
+      } catch (localError) {
+        console.error('Failed to get Git username:', localError);
+        return Promise.resolve(undefined);
+      }
+    }
+  }
+
+  getPlatform(): Promise<Platform> {
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined' && window.navigator) {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      if (userAgent.includes('win')) return Promise.resolve('windows');
+      if (userAgent.includes('mac')) return Promise.resolve('mac');
+      if (userAgent.includes('linux')) return Promise.resolve('linux');
+      return Promise.resolve('unknown');
+    }
+
+    // Node.js environment
+    try {
+      const platform = runSyncCommand('uname').toLowerCase();
+      switch (platform) {
+        case 'darwin': return Promise.resolve('mac');
+        case 'linux': return Promise.resolve('linux');
+        default:
+          // Fallback for Windows or other platforms
+          const os = require('os');
+          const platformName = os.platform();
+          switch (platformName) {
+            case 'win32': return Promise.resolve('windows');
+            case 'darwin': return Promise.resolve('mac');
+            case 'linux': return Promise.resolve('linux');
+            default: return Promise.resolve('unknown');
+          }
+      }
+    } catch (error) {
+      console.warn('Could not determine platform:', error);
+      return Promise.resolve('unknown');
+    }
   }
 }

@@ -19,6 +19,9 @@ export default function FeedbackButtons({ item }: FeedbackButtonsProps) {
 
   const sendFeedback = (feedback: boolean) => {
     setFeedback(feedback);
+    // 添加 trackFeatureUsage 统计点赞和踩
+    const featureUsage = feedback ? 'chat/thumbsUp' : 'chat/thumbsDown';
+    ideMessenger.request("stats/trackFeatureUsages", { feature: featureUsage });
     if (item.promptLogs?.length) {
       for (const promptLog of item.promptLogs) {
         ideMessenger.post("devdata/log", {

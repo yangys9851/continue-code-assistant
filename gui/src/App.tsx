@@ -11,6 +11,7 @@ import History from "./pages/history";
 import MigrationPage from "./pages/migration";
 import MorePage from "./pages/More";
 import Stats from "./pages/stats";
+import UserUsageStats from "./pages/usagestats";
 import { ROUTES } from "./util/navigation";
 import { SubmenuContextProvidersProvider } from "./context/SubmenuContextProviders";
 import ConfigPage from "./pages/config";
@@ -36,6 +37,10 @@ const router = createMemoryRouter([
       {
         path: "/stats",
         element: <Stats />,
+      },
+      {
+        path: "/usagestats",
+        element: <UserUsageStats />,
       },
       {
         path: "/addModel",

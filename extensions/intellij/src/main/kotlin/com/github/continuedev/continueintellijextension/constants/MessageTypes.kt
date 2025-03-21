@@ -83,6 +83,7 @@ class MessageTypes {
             "history/load",
             "history/save",
             "devdata/log",
+            "stats/trackFeatureUsages",
             "config/addModel",
             "config/addContextProvider",
             "config/newPromptFile",
@@ -112,6 +113,7 @@ class MessageTypes {
             "streamDiffLines",
             "chatDescriber/describe",
             "stats/getTokensPerDay",
+            "stats/getFeatureUsage",
             "stats/getTokensPerModel",
             // Codebase
             "index/setPaused",

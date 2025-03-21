@@ -726,6 +726,8 @@ export interface IDE {
 
   getGitHubAuthToken(args: GetGhTokenArgs): Promise<string | undefined>;
 
+  getGitUsername(): Promise<string | undefined>;
+
   // Secret Storage
   readSecrets(keys: string[]): Promise<Record<string, string>>;
 
@@ -736,6 +738,8 @@ export interface IDE {
 
   // Callbacks
   onDidChangeActiveTextEditor(callback: (fileUri: string) => void): void;
+
+  getPlatform(): Promise<"mac" | "linux" | "windows" | "unknown">;
 }
 
 // Slash Commands
@@ -1211,6 +1215,7 @@ export interface Config {
   contextProviders?: (CustomContextProvider | ContextProviderWithParams)[];
   /** If set to true, Continue will not index your codebase for retrieval */
   disableIndexing?: boolean;
+  disableAutoIndexing?: boolean;
   /** If set to true, Continue will not make extra requests to the LLM to generate a summary title of each session. */
   disableSessionTitles?: boolean;
   /** An optional token to identify a user. Not used by Continue unless you write custom coniguration that requires such a token */
@@ -1246,6 +1251,7 @@ export interface ContinueConfig {
   contextProviders?: IContextProvider[];
   disableSessionTitles?: boolean;
   disableIndexing?: boolean;
+  disableAutoIndexing?: boolean; // 添加这个属性
   userToken?: string;
   tabAutocompleteOptions?: Partial<TabAutocompleteOptions>;
   ui?: ContinueUIConfig;

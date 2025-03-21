@@ -245,6 +245,30 @@ class FileSystemIde implements IDE {
   async subprocess(command: string, cwd?: string): Promise<[string, string]> {
     return ["", ""];
   }
+
+  async getGitUsername(): Promise<string | undefined> {
+    try {
+      const { execSync } = require('child_process');
+      const username = execSync('git config user.name', { encoding: 'utf8' }).trim();
+      return username || undefined;
+    } catch (error) {
+      console.warn('Could not get git username:', error);
+      return undefined;
+    }
+  }
+
+  async getPlatform(): Promise<"mac" | "linux" | "windows" | "unknown"> {
+    // Use Node.js os module for platform detection
+    const os = require('os');
+    const platform = os.platform();
+
+    switch (platform) {
+      case 'darwin': return 'mac';
+      case 'win32': return 'windows';
+      case 'linux': return 'linux';
+      default: return 'unknown';
+    }
+  }
 }
 
 export default FileSystemIde;

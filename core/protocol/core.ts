@@ -166,6 +166,18 @@ export type ToCoreFromIdeOrWebviewProtocol = {
     undefined,
     { model: string; promptTokens: number; generatedTokens: number }[],
   ];
+  "stats/getFeatureUsage": [
+    undefined,
+    {
+      username: string;
+      feature: string;
+      usageCount: number;
+    }[],
+  ];
+  "stats/trackFeatureUsages": [
+    { feature: string },
+    void,
+  ];
   "tts/kill": [undefined, void];
 
   // Codebase indexing

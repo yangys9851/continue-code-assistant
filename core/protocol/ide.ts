@@ -62,6 +62,7 @@ export type ToIdeFromWebviewOrCoreProtocol = {
   readRangeInFile: [{ filepath: string; range: Range }, string];
   getDiff: [{ includeUnstaged: boolean }, string[]];
   getWorkspaceConfigs: [undefined, ContinueRcJson[]];
+  getGitUsername: [undefined, string | undefined];
   getTerminalContents: [undefined, string];
   getDebugLocals: [{ threadIndex: number }, string];
   getTopLevelCallStackSources: [
@@ -98,6 +99,14 @@ export type ToIdeFromWebviewOrCoreProtocol = {
     ControlPlaneSessionInfo | undefined,
   ];
   logoutOfControlPlane: [undefined, void];
+
+  getFeatureUsage: [undefined, {
+    username: string;
+    feature: string;
+    usageCount: number;
+    helpfulCount: number;
+    unhelpfulCount: number
+  }[]],
 };
 
 export type ToWebviewOrCoreFromIdeProtocol = {

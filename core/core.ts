@@ -212,6 +212,16 @@ export class Core {
       (..._) => Promise.resolve([]),
     );
 
+    const originalOn = this.messenger.on.bind(this.messenger);
+    this.messenger.on = <T extends keyof ToCoreProtocol>(
+      messageType: T,
+      handler: (msg: Message<ToCoreProtocol[T][0]>) => ToCoreProtocol[T][1] | Promise<ToCoreProtocol[T][1]>
+    ) => {
+      return originalOn(messageType, async (msg) => {
+        await this.autoTrackFeatureUsage(messageType);
+        return handler(msg);
+      });
+    };
     const on = this.messenger.on.bind(this.messenger);
 
     // Note, VsCode's in-process messenger doesn't do anything with this
@@ -828,6 +838,22 @@ export class Core {
       const rows = await DevDataSqliteDb.getTokensPerModel();
       return rows;
     });
+    on("stats/trackFeatureUsages", async (msg) => {
+
+    });
+    on("stats/getFeatureUsage", async (msg) => {
+      console.log('🔍 getFeatureUsage event triggered');
+      console.log('🔍 Received message:', JSON.stringify(msg, null, 2));
+
+      try {
+        const rows = await DevDataSqliteDb.getFeatureUsage();
+        console.log('🔍 Feature usage rows retrieved:', rows.length);
+        return rows;
+      } catch (error) {
+        console.error('❌ Error in getFeatureUsage event handler:', error);
+        throw error;
+      }
+    });
 
     // Codebase indexing
     on("index/forceReIndex", async ({ data }) => {
@@ -1161,6 +1187,28 @@ export class Core {
       providers: "dependsOnIndexing",
     });
     this.indexingCancellationController = undefined;
+  }
+
+  private async autoTrackFeatureUsage(messageType: string): Promise<void> {
+    console.log(`autoTrackFeatureUsage ${messageType}`)
+    const messageToFeatureMap: Record<string, string> = {
+      "llm/streamChat": "Ask Questions",
+      "llm/streamComplete": "Ask Questions About Codebase",
+      "command/run": "Ask Questions About Codebase",
+      "autocomplete/complete": "Autocomplete Code Suggestions",
+      "autocomplete/accept": "autocomplete/accept",
+      "autocomplete/cancel": "autocomplete/cancel",
+      "history/list": "history/list",
+      "streamDiffLines": "Inline Edit",
+    };
+
+    const feature = messageToFeatureMap[messageType];
+    if (feature) {
+      const username = await this.ide.getGitUsername() || 'default';
+      await DevDataSqliteDb.trackFeatureUsage(username, feature).catch((e) =>
+        console.error(`trackFeatureUsage error ${feature}`, e),
+      );
+    }
   }
 
   // private

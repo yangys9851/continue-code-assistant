@@ -7,30 +7,41 @@ import {
 
 export const FREE_TRIAL_MODELS: ModelDescription[] = [
   {
-    title: "Claude 3.5 Sonnet (Free Trial)",
-    provider: "free-trial",
-    model: "claude-3-5-sonnet-latest",
+    title: "兴业小助手-深度求索V2",
+    provider: "ollama",
+    model: "deepseek-v2:16b",
+    apiBase: "http://20.5.198.227:11434",
+    contextLength: 10240,
+    completionOptions: {
+      temperature: 0,
+      maxTokens: 2000
+    },
     systemMessage:
       "You are an expert software developer. You give helpful and concise responses.",
   },
   {
-    title: "GPT-4o (Free Trial)",
-    provider: "free-trial",
-    model: "gpt-4o",
+    title: "兴业小助手-千问",
+    provider: "ollama",
+    model: "codeqwen:7b",
+    apiBase: "http://20.5.211.161:11434",
+    contextLength: 10240,
+    completionOptions: {
+      temperature: 0,
+      maxTokens: 2000
+    },
     systemMessage:
       "You are an expert software developer. You give helpful and concise responses.",
   },
   {
-    title: "Llama3.1 70b (Free Trial)",
-    provider: "free-trial",
-    model: "llama3.1-70b",
-    systemMessage:
-      "You are an expert software developer. You give helpful and concise responses.",
-  },
-  {
-    title: "Codestral (Free Trial)",
-    provider: "free-trial",
-    model: "codestral-latest",
+    title: "兴业小助手-深度求索",
+    provider: "ollama",
+    model: "deepseek-coder:6.7b",
+    apiBase: "http://20.5.211.161:11434",
+    contextLength: 10240,
+    completionOptions: {
+      temperature: 0,
+      maxTokens: 2000
+    },
     systemMessage:
       "You are an expert software developer. You give helpful and concise responses.",
   },
@@ -79,15 +90,39 @@ export const defaultSlashCommandsJetBrains = [
 ];
 
 export const defaultConfig: SerializedContinueConfig = {
-  models: [],
+  models: FREE_TRIAL_MODELS,
+  tabAutocompleteModel: {
+    title: "兴业小助手-深度求索V2",
+    provider: "ollama",
+    model: "deepseek-v2:16b",
+    apiBase: "http://20.5.198.227:11434",
+  },
+  embeddingsProvider: {
+    provider: "ollama",
+    model: "nomic-embed-text:latest",
+    apiBase: "http://20.5.211.161:11434",
+  },
   contextProviders: defaultContextProvidersVsCode,
   slashCommands: defaultSlashCommandsVscode,
   data: [],
+  disableIndexing: true,
 };
 
 export const defaultConfigJetBrains: SerializedContinueConfig = {
-  models: [],
+  models: FREE_TRIAL_MODELS,
+  tabAutocompleteModel: {
+    title: "兴业小助手-深度求索V2",
+    provider: "ollama",
+    model: "deepseek-v2:16b",
+    apiBase: "http://20.5.198.227:11434",
+  },
+  embeddingsProvider: {
+    provider: "ollama",
+    model: "nomic-embed-text:latest",
+    apiBase: "http://20.5.211.161:11434",
+  },
   contextProviders: defaultContextProvidersJetBrains,
   slashCommands: defaultSlashCommandsJetBrains,
   data: [],
+  disableIndexing: true,
 };

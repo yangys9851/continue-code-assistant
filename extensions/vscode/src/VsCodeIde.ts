@@ -662,6 +662,37 @@ class VsCodeIde implements IDE {
     const ideSettings = this.getIdeSettingsSync();
     return ideSettings;
   }
+
+  async getGitUsername(): Promise<string | undefined> {
+    try {
+      const username = await new Promise<string>((resolve, reject) => {
+        child_process.exec('git config --global user.name', (error, stdout, stderr) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve(stdout.trim());
+        });
+      });
+      return username || undefined;
+    } catch (error) {
+      // If there's an error (e.g., git not installed or no username set), return undefined
+      return undefined;
+    }
+  }
+
+  async getPlatform(): Promise<"mac" | "linux" | "windows" | "unknown"> {
+    // Use Node.js os module for platform detection
+    const os = require('os');
+    const platform = os.platform();
+
+    switch (platform) {
+      case 'darwin': return 'mac';
+      case 'win32': return 'windows';
+      case 'linux': return 'linux';
+      default: return 'unknown';
+    }
+  }
 }
 
 export { VsCodeIde };
