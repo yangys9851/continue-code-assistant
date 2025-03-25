@@ -218,7 +218,7 @@ export class Core {
       handler: (msg: Message<ToCoreProtocol[T][0]>) => ToCoreProtocol[T][1] | Promise<ToCoreProtocol[T][1]>
     ) => {
       return originalOn(messageType, async (msg) => {
-        await this.autoTrackFeatureUsage(messageType);
+        await this.autoTrackFeatureUsage(messageType, msg);
         return handler(msg);
       });
     };
@@ -1189,8 +1189,7 @@ export class Core {
     this.indexingCancellationController = undefined;
   }
 
-  private async autoTrackFeatureUsage(messageType: string): Promise<void> {
-    console.log(`autoTrackFeatureUsage ${messageType}`)
+  private async autoTrackFeatureUsage<T extends keyof ToCoreProtocol>(messageType: T, msg: Message<ToCoreProtocol[T][0]>): Promise<void> {
     const messageToFeatureMap: Record<string, string> = {
       "llm/streamChat": "Ask Questions",
       "llm/streamComplete": "Ask Questions About Codebase",
@@ -1202,7 +1201,13 @@ export class Core {
       "streamDiffLines": "Inline Edit",
     };
 
-    const feature = messageToFeatureMap[messageType];
+    let feature: string | undefined;
+    if (messageType === "stats/trackFeatureUsages") {
+      feature = (msg?.data as ToCoreProtocol["stats/trackFeatureUsages"][0])?.feature
+      feature = messageToFeatureMap[feature] ?? feature;
+    } else {
+      feature = messageToFeatureMap[messageType as string];
+    }
     if (feature) {
       const username = await this.ide.getGitUsername() || 'default';
       await DevDataSqliteDb.trackFeatureUsage(username, feature).catch((e) =>

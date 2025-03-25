@@ -23,7 +23,7 @@
   "description": "The leading open-source AI code assistant",
   "publisher": "Continue",
   "engines": {
-    "vscode": "^1.70.0",
+    "vscode": "^1.69.1",
     "node": ">=20.11.0"
   },
   "engine-strict": true,
