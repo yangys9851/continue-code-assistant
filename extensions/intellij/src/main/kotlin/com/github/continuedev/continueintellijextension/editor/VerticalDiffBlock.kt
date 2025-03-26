@@ -1,10 +1,12 @@
 package com.github.continuedev.continueintellijextension.editor
 
+import com.github.continuedev.continueintellijextension.services.ContinuePluginService
 import com.github.continuedev.continueintellijextension.utils.getAltKeyLabel
 import com.github.continuedev.continueintellijextension.utils.getShiftKeyLabel
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.LogicalPosition
 import com.intellij.openapi.editor.colors.EditorFontType
@@ -34,6 +36,7 @@ class VerticalDiffBlock(
     private var hasRenderedDiffBlock: Boolean = false
     private val editorComponentInlaysManager = EditorComponentInlaysManager.from(editor, false)
     private val greenKey = createTextAttributesKey("CONTINUE_DIFF_NEW_LINE", 0x3000FF00, editor)
+    private val continuePluginService = ServiceManager.getService(project, ContinuePluginService::class.java)
 
     init {
         val (acceptBtn, rejectBtn) = createButtons()
@@ -110,6 +113,9 @@ class VerticalDiffBlock(
     fun handleReject() {
         revertDiff()
         clearEditorUI()
+        continuePluginService.coreMessenger?.request(
+            "stats/trackFeatureUsages", mapOf("feature" to "Inline/rejectBlock"), null
+        ) {}
     }
 
     private fun refreshEditor() {
@@ -188,6 +194,9 @@ class VerticalDiffBlock(
 
     private fun handleAccept() {
         clearEditorUI()
+        continuePluginService.coreMessenger?.request(
+            "stats/trackFeatureUsages", mapOf("feature" to "Inline/acceptBlock"), null
+        ) {}
     }
 
     private fun revertDiff() {

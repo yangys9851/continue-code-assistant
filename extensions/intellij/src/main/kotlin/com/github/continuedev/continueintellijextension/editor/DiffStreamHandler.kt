@@ -43,6 +43,7 @@ class DiffStreamHandler(
 
     private val curLineKey = createTextAttributesKey("CONTINUE_DIFF_CURRENT_LINE", 0x40888888, editor)
     private val unfinishedKey = createTextAttributesKey("CONTINUE_DIFF_UNFINISHED_LINE", 0x20888888, editor)
+    private val continuePluginService = ServiceManager.getService(project, ContinuePluginService::class.java)
 
     init {
         initUnfinishedRangeHighlights()
@@ -51,6 +52,9 @@ class DiffStreamHandler(
     fun acceptAll() {
         editor.markupModel.removeAllHighlighters()
         resetState()
+        continuePluginService.coreMessenger?.request(
+            "stats/trackFeatureUsages", mapOf("feature" to "Inline/acceptAll"), null
+        ) {}
     }
 
     fun rejectAll() {
@@ -64,6 +68,9 @@ class DiffStreamHandler(
         }
 
         resetState()
+        continuePluginService.coreMessenger?.request(
+            "stats/trackFeatureUsages", mapOf("feature" to "Inline/rejectAll"), null
+        ) {}
     }
 
     fun streamDiffLinesToEditor(
@@ -71,7 +78,6 @@ class DiffStreamHandler(
     ) {
         isRunning = true
 
-        val continuePluginService = ServiceManager.getService(project, ContinuePluginService::class.java)
         val virtualFile = getVirtualFile()
 
         continuePluginService.coreMessenger?.request(
